@@ -1,0 +1,82 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{ super() }}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename= 'img/icon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles1.css') }}">
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Font Awesome -->
+    <link  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet"/>
+    <script  type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
+    <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"
+    ></script>
+    <!-- CSS Style -->
+    <style type="text/css">
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: 1px;
+    }
+    </style>
+{% endblock %}
+
+{% block title %} Cine MinsionTic {% endblock %}
+
+
+{% block content %}
+    <!-- Barra de navegacion-->
+    <header class="hero">
+        <nav class="nav__hero">
+            <div class="container nav__container">
+                <div class="logo">
+                    <h2 class="logo__name">Cine MisionTic<span class="point">.</span></h2>
+                </div>
+                <div class="links">
+                    <a href="{{ url_for('home') }}"class="link">CARTELERA</a>
+                    <a href="{{ url_for('upcoming_movies') }}"class="link">PRONTO</a>
+                    <div class="link">
+                        <!-- Formulario busqueda pelicula -->
+                    <form class="form-search">
+                        <div class="input-group">
+                        <input class="form-control form-text" maxlength="128" placeholder="Buscar" size="15" type="text" />
+                        <span class="input-group-btn"><button class="btn btn-primary"><i class="fa fa-search fa-lg">&nbsp;</i></button></span>
+                        </div>
+                    </form>
+                    </div>
+                    <a href="{{ url_for('login') }}" class="link link--active">INICIAR SESION</a>
+                    <a href="{{ url_for('register') }}" class="link link--active">REGÍSTRATE</a>
+                </div>
+            </div>
+        </nav></header>
+
+        <!-- fin Barra de navegacion-->
+    <main>        
+        <section>
+            <div class="container">
+                <div class="row d-flex align-items-center justify-content-center h-100">
+                    <div style="align-items: center;" class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                    <center><h1 size="50 px">Inicio de sesión</h1></center>
+        
+        <!--------------------- Formulario Inicios de Sesion --------------------->
+        <form action= {{url_for('login')}} method="POST">
+            <center><img style="max-width: 100px" class ="iconUser" src = "{{ url_for('static', filename='img/iconuser.png') }}"></center>
+            {{ wtf.quick_form(form) }}
+        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

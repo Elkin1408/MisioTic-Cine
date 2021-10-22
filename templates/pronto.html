@@ -1,0 +1,153 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine MisionTic</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.ico') }}" />
+    <link rel="stylesheet" href="url_for('static', filename='css/styles.css')">
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Font Awesome -->
+    <link  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet"/>
+    <script  type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
+    <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"
+    ></script>
+{% endblock %}
+
+{% block title %} Cine MisionTic {% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+
+</head>
+<body>
+    <!-- Barra de navegacion-->
+    <header class="hero">
+        <nav class="nav__hero">
+            <div class="container nav__container">
+                <div class="logo">
+                    <h2 class="logo__name">Cine MisionTic<span class="point">.</span></h2>
+                </div>
+                <div class="links">
+                    <a href="{{ url_for('home') }}" class="link">CARTELERA</a>
+                    <a href="{{ url_for('upcoming_movies') }}"  class="link">PRONTO</a>
+                    <div class="link">
+                      <form class="form-search">
+                        <div class="input-group">
+                          <input class="form-control form-text" maxlength="128" placeholder="Buscar" size="15" type="text" />
+                          <span class="input-group-btn"><button class="btn btn-primary"><i class="fa fa-search fa-lg">&nbsp;</i></button></span>
+                        </div>
+                      </form>
+                    </div>
+                    <a href="{{ url_for('login') }}"  class="link link--active">INICIAR SESION</a>
+                    <a href="{{ url_for('register') }}"  class="link link--active">REGISTRATE</a>
+                </div>
+            </div>
+        </nav></header>
+        <!-- fin Barra de navegacion-->
+
+        <!--<section class="container hero__main">  
+            <div class="hero__textos">
+                <h1 class="title">La mejor <span class="title--active">Experiencia Digital.</span></h1> 
+                <p class="copy">Nos encargamos de llevar tu idea al <span class="copy__active">siguiente nivel</span></p>
+                <a href="#" class="cta">Agenda una demo</a>
+            </div>
+            <img src="img/mockup.png" class="mockup">
+        </section>-->
+    
+
+    <main>        
+       
+        <section class="projects container">
+                <h2 class="subtitle">Pronto<span class="point">.</span></h2>
+                <p class="copy__section">Proximamente en Cartelera.</p>
+                <div class="testimony-container">
+                    <div class="testimony__card">
+                        <img src="/static/img/poster-1.png" class="testimony__img">
+                        <div class="testimony__copy">
+                            <div class="testimony__info">
+                                <h3 class="testimony__name">Venom: Carnage</h3>
+                                <p class="testimony__position">Proximamente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimony__card">
+                        <img src="/static/img/poster-2.png" class="testimony__img">
+                        <div class="testimony__copy">
+                            <div class="testimony__info">
+                                <h3 class="testimony__name">Rock Dog</h3>
+                                <p class="testimony__position">Proximamente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimony__card">
+                        <img src="/static/img/poster-3.jpg" class="testimony__img">
+                        <div class="testimony__copy">
+                            <div class="testimony__info">
+                                <h3 class="testimony__name">Dune</h3>
+                                <p class="testimony__position">Proximamente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
+                </div>
+            </div>
+        </section>
+
+        
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__caption">
+            <section class="download">
+                <h3 class="title__footer">Descarga nuestra App</h3>
+                <div class="download__app">
+                    <div class="download__item">
+                        <i class='bx bxl-apple download__logo' ></i>
+                        <h4 class="download__title">App Store</h4>
+                    </div>
+                    <div class="download__item">
+                        <i class='bx bxl-play-store download__logo' ></i>
+                        <h4 class="download__title">Play Store</h4>
+                    </div>
+                </div>
+                <div class="footer__copy">
+                    <p class="copyright">28-Grupo-6 &copy; 2020 Todos los derechos reservados</p>
+    
+                    <a href="#" class="politica__privacidad politica__privacidad--margin">Politica de privacidad</a>
+                    <a href="#" class="politica__privacidad ">Terminos y condiciones</a>
+                </div>
+            </section>
+            <section class="get-email">
+                <h3 class="title__footer">¿Estás listo para trabajar con nosotros?</h3>
+                <form class="newsletter newsletter--modifier">
+                    <input type="text" class="newsletter__input" placeholder="Ingresa tu email">
+                    <input type="submit" class="newsletter__submit" value="Comienza hoy">
+                </form>
+                <div class="socialmedia">
+                    <p class="socialmedia__legend">Siguenos en:</p>
+                    <i class='socialmedia__icon bx bxl-facebook-circle'></i>
+                    <i class='socialmedia__icon bx bxl-linkedin-square'></i>                                                                                                        
+                    <i class='socialmedia__icon bx bxl-twitter' ></i>   
+                    <i class='socialmedia__icon bx bxl-instagram' ></i>
+                    <i class='socialmedia__icon bx bxl-github' ></i>  
+                </div>
+            </section>
+        </div>
+
+        
+    </footer>
+</body>
+</html>

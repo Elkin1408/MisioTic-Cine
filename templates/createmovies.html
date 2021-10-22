@@ -1,0 +1,156 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+-
+{% block styles %}
+  <meta charset="utf-8">
+  <title>Peliculas</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.ico') }}"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+  <style>
+  :root{
+    --gold1:#F4BD76;
+    --gold2:#F6CD8F;
+    --gray:#ffffff80;
+    --gray2:#f7d9d990;
+    --black1: #9C9C9B;
+    --black2: #30353B;
+    --shadow: 0 8px 8px;
+    --color_shadow: #00000033;
+  }
+  body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+  }
+
+  .sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #154360;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  }
+
+  .sidebar a {
+  display: block;
+  color: white;
+  padding: 16px;
+  text-decoration: none;
+  }
+
+  .sidebar a.active {
+  background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;
+  color: white;
+  }
+
+  .sidebar a:hover:not(.active) {
+  background-color: #D0D3D4;
+  color: white;
+  }
+
+  div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  
+  }
+
+  @media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+  }
+
+  @media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+  }
+</style>
+
+{% endblock %}
+
+{% block title %} CineMisionTic {% endblock %}
+
+{% block content %}
+  <div class="sidebar">
+    <a class="active" href="{{ url_for('home') }}"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
+    <a href="{{ url_for('manage_movies') }}"><i class="fas fa-film"></i> Peliculas</a>
+    <a href="{{ url_for('manage_functions') }}"><i class="fas fa-theater-masks"></i> Funciones</a>
+    <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
+    <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
+  </div>
+  <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
+    <a class="navbar-brand"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
+    <i style="font-size:20px" class="fas fa-user"></i>
+  </nav>
+  <div class="content">
+    <div style="padding-top: 30px;padding-bottom: 10px;" class="row">
+      <div class="col"><h2><i class="fas fa-film"></i> Crear Pelicula</h2></div>
+    </div>
+     
+    <form method="POST" action="{{ url_for('save_movies') }}" enctype="multipart/form-data">
+      <div style="margin-left: 30px;margin-right: 30px;" class="row">
+          <div class="col">
+              <div class="form-group">
+                <label for="exampleFormControlInput1">Titulo</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" placeholder="">
+              </div>
+          </div>
+          <div class="col">
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Genero</label>
+                <input type="text" class="form-control" id="genero" name="genero" placeholder="">
+              </div>
+          </div>
+          <div class="col-12">
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Descripcion</label>
+                <textarea class="form-control" id="descrip" name="descrip" rows="3"></textarea>
+              </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Clasificacion</label>
+              <input type="text" class="form-control" id="clasificacion" name="clasificacion" placeholder="">
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Duracion</label>
+              <input type="text" class="form-control" id="duracion" name="duracion" placeholder="">
+            </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Director</label>
+            <input type="text" class="form-control" id="director" name="director" placeholder="">
+          </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Idioma</label>
+          <input type="textarea" class="form-control" id="Idioma" name="idioma" placeholder="">
+        </div>
+      </div>
+      <div class="col-12">
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Cast</label>
+            <textarea class="form-control" id="cast" name="cast" rows="2"></textarea>
+          </div>
+      </div>
+      <div style="padding-bottom: 10px;" class="col"><input type=file name=file></div>
+        <div class="col-12">
+          <input class="btn btn-primary" type="submit" value="enviar">
+        </div>
+      </div>
+    
+    </form>
+  </div>
+{% endblock %}

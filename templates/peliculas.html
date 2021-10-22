@@ -1,0 +1,127 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+  <meta charset="utf-8">
+  <title>Peliculas</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.ico') }}"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+  <style>
+  :root{
+    --gold1:#F4BD76;
+    --gold2:#F6CD8F;
+    --gray:#ffffff80;
+    --gray2:#f7d9d990;
+    --black1: #9C9C9B;
+    --black2: #30353B;
+    --shadow: 0 8px 8px;
+    --color_shadow: #00000033;
+  }
+  body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+  }
+
+  .sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #154360;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  }
+
+  .sidebar a {
+  display: block;
+  color: white;
+  padding: 16px;
+  text-decoration: none;
+  }
+
+  .sidebar a.active {
+  background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;
+  color: white;
+  }
+
+  .sidebar a:hover:not(.active) {
+  background-color: #D0D3D4;
+  color: white;
+  }
+
+  div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+  }
+
+  @media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+  }
+
+  @media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+  }
+</style>
+
+{% endblock %}
+
+{% block title %} CineMisionTic {% endblock %}
+
+{% block content %}
+  <div class="sidebar">
+    <a class="active" href="{{ url_for('home') }}"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
+    <a href="{{ url_for('manage_movies') }}"><i class="fas fa-film"></i> Peliculas</a>
+    <a href="{{ url_for('manage_functions') }}"><i class="fas fa-theater-masks"></i> Funciones</a>
+    <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
+    <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
+  </div>
+  <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
+    <a class="navbar-brand"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
+    <i style="font-size:20px" class="fas fa-user"></i>
+  </nav>
+  <div class="content">
+    <div style="padding-top: 30px;padding-bottom: 10px;" class="row">
+      <div class="col"><h2><i class="fas fa-film"></i> Peliculas</h2></div>
+      <div class="col"><a class="btn btn-outline-dark" role="button" aria-disabled="true" href="{{ url_for('create_movies') }}">Crear</a></div>
+    </div>
+     
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Codigo</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Portada</th>
+        <th scope="col">Descripcion</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Editar</th>
+        <th scope="col">Borrar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fila in result %}      
+      <tr>
+        <th scope="row"><a href="{{ url_for('seemovies',codigo=fila[0]) }}">{{ fila[0] }}</a></th>
+        <td>{{ fila[1] }}</td>
+        <td><img src="{{ fila[10] }}" alt="no" style="max-width: 100px;"  ></td>
+        <td>{{ fila[2] }}</td>
+        <td>{{ fila[4] }}</td>
+        <td><a href="{{ url_for('editmovies',codigo=fila[0]) }}"><i class="far fa-edit"></i></a></td>
+        <td><a href="{{ url_for('deletemovies',codigo=fila[0]) }}"><i class="far fa-trash-alt"></i></a></td>        
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  </div>
+  
+{% endblock %}
