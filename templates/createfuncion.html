@@ -126,7 +126,7 @@
         <div class="col-6">
           <div class="form-group">
             <label for="exampleFormControlInput1">Pelicula</label>
-            <select name="pelicula_codigo" id="pelicula_codigo" class="form-control" name="select">
+            <select name="pelicula_codigo" id="pelicula_codigo" class="form-control">
               {% for fila in result %}  
               <option value="{{ fila[0] }}">{{ fila[1] }}</option>
               {% endfor %}
