@@ -27,7 +27,6 @@ body{
     max-width: 1200px;
     margin: 0 auto;
     overflow: hidden;
-    padding:100px 0;
     height: auto;
 }
 
@@ -892,7 +891,7 @@ label {
 }
 
 .card3{
-    width: 40%;
+    width: 100%;
     padding: 30px 0;
     overflow: hidden;
     background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);

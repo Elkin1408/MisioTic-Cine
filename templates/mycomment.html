@@ -69,39 +69,38 @@
                     </div>
                 </div>
             </div>
-            <center>
-                <div class="card3" style="color: blanchedalmond;" >
-                    <div class="cards__text2">
-                        <h3 class="background__title">Información Personal: </h3>
-                    <form method="post" action="{{ url_for('show_user_profile') }}">
-                        <input type="hidden" id="id" name="id" value="{{g.user[0]}}">
-                            <div class="form">
-                                <label for="name">Nombre*</label>
-                                <input class="form" name="name" id="name" value="{{g.user[1]}}"/>
-                            </div>
-                            <div class="form">
-                            <label for="apellido">Email*</label>
-                            <input class="form" name="email" id="email" value="{{g.user[2]}}"/>
-                            </div>
-                            <div class="form">
-                                <label for="genero">Genero*</label>
-                                <input type="text" name="genero" id="genero" value="{{g.user[5]}}"/>
-                                
-                            </div>
-                            <div class="form">
-                                <label for="start">Fecha de Nacimiento</label>
-                                <input type="date" id="date" name="date"
-                                value="{{g.user[4]}}"
-                                min="1920-01-01" max="2022-12-31"> 
-                                
-                            </div>
-                            <input name="regbutton" type="submit" class="card__button" value="Guardar cambios" >
-                            </div> 
-                        
+            {% for line in comment %}
+            <!--<form method="post" action="{{ url_for('createcomment') }}">
+                <div class="col-6">
+                  <div class="mb-3">
+                      <label for="exampleFormControlTextarea1" class="form-label"><p><i class="fas fa-exclamation-triangle"></i> {{line[3]}}.</p></label>
+                      <textarea class="form-control" name="comment" id="comment" rows="3" >{{line[1]}}</textarea>
+                      <input type="hidden" name="user" id="user" value="{{g.user[0]}}" required>
+                      <input type="hidden" name="pelicula" id="pelicula" value="{{pelicula}}" required>
+                      <button class="btn btn-primary" type="submit">Publicar</button>
+                  </div>
                 </div>
-                </div>
-            </form>
-            </center>          
+              </form>-->
+              
+                  <div class="col-10">
+                    <div class="mb-4">
+                      <div class="card">
+                        <form method="post" action="{{ url_for('mycomments') }}">
+                          <div class="card-body bg-light">
+                            <h6 class="text-start"><i class="fas fa-user-alt"></i> {{line[3]}}</h6>
+                            <input type="hidden" id="idcomentario" name="idcomentario" value="{{line[0]}}">
+                            <textarea class="form-control" name="ecomment" id="ecomment" rows="3" >{{line[1]}}</textarea>
+                            <p class="small"> {{ line[2] }}</p>
+                            <div style="display: flex;">
+                                <input class="btn btn-primary" type="submit" value="Editar">  <a class="btn btn-light" href="{{ url_for('mycomments',id=line[0],modo='d') }}">Borrar</a></div>  
+                          </div>
+                        </form>
+                          
+                      </div>
+                     </div>
+                     
+                  </div>
+            {% endfor %}          
         </article>
     </section>
     

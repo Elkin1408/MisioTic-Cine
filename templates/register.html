@@ -39,7 +39,7 @@
         <nav class="nav__hero">
             <div class="container nav__container">
                 <div class="logo">
-                    <h2 class="logo__name">Cine Mintic<span class="point">.</span></h2>
+                    <h2 class="logo__name">Cine Misiontic<span class="point">.</span></h2>
                 </div>
                 <div class="links">
                     <a href="{{ url_for('home') }}" class="link">CARTELERA</a>
@@ -67,16 +67,16 @@
             <center><h1 size="50 px">Regístrate</h1></center>
         <form method="post" action="{{url_for('register')}}">
             <!-- Formulario de Registro -->
-        <div class="form-outline mb-4">
+        <div class="form mb-4">
             {{ wtf.form_field(register_form.username, class='form-label form-control-lg form-control') }}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form mb-4">
             {{ wtf.form_field(register_form.email, class='form-label form-control-lg form-control') }}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form mb-4">
             {{ wtf.form_field(register_form.password, class='form-label form-control-lg form-control') }}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form mb-4">
             {{ wtf.form_field(register_form.confirm_password, class='form-label form-control-lg form-control') }}
         </div>
             <center>
@@ -84,15 +84,15 @@
             </center>
         <center>
             <div class="row"> 
-                <div class="dropdown col-4 ">
+                <div class="dropdown col-3 ">
                 {{ wtf.form_field(register_form.birth_day, class='dropdown btn btn-ligth dropdown-toggles') }}        
               </div>
-
-            <div class="dropdown col-4 ">
+              <div class="dropdown col-1 "></div>
+            <div class="dropdown col-3 ">
                 {{ wtf.form_field(register_form.birth_month, class='dropdown btn btn-ligth dropdown-toggles') }}
             </div>
-
-            <div class="dropdown col-4 ">
+            <div class="dropdown col-1 "></div>
+            <div class="dropdown col-3 ">
                 {{ wtf.form_field(register_form.birth_year, class='dropdown btn btn-ligth dropdown-toggles') }}
             </div>
             

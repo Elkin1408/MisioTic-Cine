@@ -83,7 +83,9 @@
     <a class="active" href="{{ url_for('home') }}"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
     <a href="{{ url_for('manage_movies') }}"><i class="fas fa-film"></i> Peliculas</a>
     <a href="{{ url_for('manage_functions') }}"><i class="fas fa-theater-masks"></i> Funciones</a>
+    {% if g.user[6]==1%}
     <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
+    {% endif %}
     <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
   </div>
   <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
@@ -92,7 +94,7 @@
   </nav>
   <div class="content">
     <div style="padding-top: 30px;padding-bottom: 10px;" class="row">
-      <div class="col"><h2><i class="fas fa-film"></i> Crear Pelicula</h2></div>
+      <div class="col"><h2><i class="fas fa-film"></i> Crear Funcion</h2></div>
     </div>
      
     <form method="POST" action="{{ url_for('save_funcion') }}" enctype="multipart/form-data">
@@ -111,8 +113,8 @@
           </div>
           <div class="col-12">
               <div class="form-group">
-                <label for="exampleFormControlTextarea1">Hora</label>
-                <input type="time" class="form-control" id="hora" name="hora" placeholder="">
+                <label for="exampleFormControlTextarea1">Hora<span class="small">separda por guion</span> </label>
+                <input type="text" class="form-control" id="hora" name="hora" placeholder="">
               </div>
           </div>
           <div class="col-6">

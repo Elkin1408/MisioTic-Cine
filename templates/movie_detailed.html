@@ -40,14 +40,19 @@
                         </div>
                       </form>
                     </div>
-                    <a href="{{ url_for('login') }}" class="link link--active">INICIAR SESION</a>
-                    <a href="{{ url_for('register') }}" class="link link--active">REGISTRATE</a>
+                    {% if g.user  %}
+                        <a href="{{ url_for('show_user_profile') }}" class="link link--active">MI PERFIL</a>
+                        <a href="{{ url_for('logout') }}" class="link link--active">CERRAR SESION</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="link link--active">INICIAR SESION</a>
+                        <a href="{{ url_for('register') }}" class="link link--active">REGISTRATE</a>
+                    {% endif %}
                 </div>
             </div>
         </nav></header>
     <main>        
         <section class="services">
-            
+            {% for fila in movie %}    
             <!-- Cartelera-->
             <div class="container-fluid">
                 <iframe width=100% height= 415px; src="https://www.youtube.com/embed/COvnHv42T-A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -59,7 +64,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="card container">
-                                <img src="/static/img/image1.jpg" class="img-fluid" >
+                                <img src="{{fila[10]}}" class="img-fluid" >
                                 <div class="rate align-self-center">
                                     <input type="radio" id="star5" name="rate-movie" value="5" />
                                     <label for="star5" title="text">5 stars</label>
@@ -77,21 +82,21 @@
                             </div>
                         </div>
                         <div class="col">
-                            <h1>X-men</h1>
-                            <p>92 min</p>
+                            <h1>{{fila[1]}}</h1>
+                            <p>{{fila[5]}} min</p>
                             <dl class="row">
-                                <dd>Los X-Men luchan por la paz y la igualdad entre humanos normales y mutantes en un mundo donde el fanatismo anti-mutante es feroz y generalizado. Están dirigidos por Charles Xavier, también conocido como Profesor X, un poderoso telépata.</dd>
+                                <dd>{{fila[2]}}</dd>
                                 <dt class="col-sm-4">Titulo:</dt>
-                                <dd class="col-sm-8">X-men</dd>
+                                <dd class="col-sm-8">{{fila[1]}}</dd>
                 
                                 <dt class="col-sm-4">Titulo original:</dt>
-                                <dd class="col-sm-8">X-men: Originals</dd>
+                                <dd class="col-sm-8">{{fila[1]}}</dd>
                 
                                 <dt class="col-sm-4">Reparto:</dt>
-                                <dd class="col-sm-8">Hugh Jackman, Patrick Siewart, Ian McKellen, Famke Janssen, James Marsden, Halle Berry, Anna Paquin, Tyler Mane, Ray Park, Rebecca Romjin, Bruce Davison.</dd>
+                                <dd class="col-sm-8">{{fila[7]}}</dd>
                 
                                 <dt class="col-sm-4 text-truncate">Director:</dt>
-                                <dd class="col-sm-8">Bryan Singer.</dd>
+                                <dd class="col-sm-8">{{fila[6]}}.</dd> 
                             </dl>
                         </div>
                         <div class="col">
@@ -189,33 +194,39 @@
                         </div> 
                         </div>
                       </div>
+                      
+                      {% endfor %}
                   <div class="col">
                     <h4>Comentarios:</h4>
                   </div>
-
+                  <form method="post" action="{{ url_for('createcomment') }}">
                   <div class="col-6">
                     <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label"><p><i class="fas fa-exclamation-triangle"></i></i> Por favor iniciar sesión para comentar.</p></label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Agregar comentario."></textarea>
+                        <label for="exampleFormControlTextarea1" class="form-label"><p><i class="fas fa-exclamation-triangle"></i> Por favor iniciar sesión para comentar.</p></label>
+                        <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Agregar comentario."></textarea>
+                        <input type="hidden" name="user" id="user" value="{{g.user[0]}}" required>
+                        <input type="hidden" name="pelicula" id="pelicula" value="{{pelicula}}" required>
                         <button class="btn btn-primary" type="submit">Publicar</button>
                     </div>
                   </div>
-
+                </form>
+                {% for line in comment %}
                   <div class="col-10">
                     <div class="mb-4">
                       <div class="card">
                           <div class="card-body bg-light">
-                            <h6 class="text-start"><i class="fas fa-user-alt"></i>Usuario</h6>
-                            <p class="text-start"> Muy buena. Me encantó, deja una increible reflexión.</p>  
+                            <h6 class="text-start"><i class="fas fa-user-alt"></i> {{line[2]}}</h6>
+                            <p class="text-start"> {{ line[0] }}</p>
+                            <p class="small"> {{ line[1] }}</p>  
                           </div>
                       </div>
                      </div>
                   </div>
-
+                {% endfor %}
                 </div>
               </div>		    
 		</div>
-
+        
                 <!-- fin cartelera-->
             
         </section>

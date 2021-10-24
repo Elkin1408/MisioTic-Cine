@@ -2,10 +2,10 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block styles %}
-    {{ super() }}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename= 'img/icon.ico') }}" />
+    <title>register html </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.ico') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles1.css') }}">
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
     <!-- Font Awesome -->
@@ -20,14 +20,13 @@
     type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"
     ></script>
-    <!-- CSS Style -->
     <style type="text/css">
     .divider:after,
     .divider:before {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: 1px;
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: 1px;
     }
     </style>
 {% endblock %}

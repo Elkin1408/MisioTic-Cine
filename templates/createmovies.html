@@ -83,7 +83,9 @@
     <a class="active" href="{{ url_for('home') }}"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
     <a href="{{ url_for('manage_movies') }}"><i class="fas fa-film"></i> Peliculas</a>
     <a href="{{ url_for('manage_functions') }}"><i class="fas fa-theater-masks"></i> Funciones</a>
+    {% if g.user[6]==1%}
     <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
+    {% endif %}
     <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
   </div>
   <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
@@ -145,7 +147,7 @@
             <textarea class="form-control" id="cast" name="cast" rows="2"></textarea>
           </div>
       </div>
-      <div style="padding-bottom: 10px;" class="col"><input type=file name=file></div>
+      <div  style="padding-bottom: 10px;" class="col mb-3"><input class="form-control" type=file name=file></div>
         <div class="col-12">
           <input class="btn btn-primary" type="submit" value="enviar">
         </div>
