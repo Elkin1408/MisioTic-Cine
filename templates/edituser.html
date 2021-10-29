@@ -83,9 +83,7 @@
     <a class="active" href="{{ url_for('home') }}"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
     <a href="{{ url_for('manage_movies') }}"><i class="fas fa-film"></i> Peliculas</a>
     <a href="{{ url_for('manage_functions') }}"><i class="fas fa-theater-masks"></i> Funciones</a>
-    {% if g.user[6]==1%}
     <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
-    {% endif %}
     <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
   </div>
   <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
@@ -94,68 +92,58 @@
   </nav>
   <div class="content">
     <div style="padding-top: 30px;padding-bottom: 10px;" class="row">
-      <div class="col"><h2><i class="fas fa-film"></i> Crear Funcion</h2></div>
+      <div class="col"><h2><i class="fas fa-film"></i> Editar Rol</h2></div>
     </div>
-     
-    <form method="POST" action="{{ url_for('save_funcion') }}" enctype="multipart/form-data">
+    {% for fila in result %}
+    <form method="POST" action="{{ url_for('usersave') }}">
       <div style="margin-left: 30px;margin-right: 30px;" class="row">
-          <div class="col-6">
+        <input type="hidden" name="id" id="id" value="{{fila[0]}}">
+          <div class="col">
               <div class="form-group">
-                <label for="exampleFormControlInput1">Categoria</label>
-                <select class="form-control" name="categoria" id="categoria">
-                  <option value="" selected>Seleccione</option>
-                  <option value="2D Sub">2D Sub</option>
-                  <option value="3D Doblado">3D Doblado</option>
-                  <option value="3D Ultra Dob">3D Ultra Dob</option>
-                </select>
+                <label for="exampleFormControlInput1">Nombre</label>
+                <input type="text" readonly class="form-control" value="{{fila[1]}}">
               </div>
           </div>
-          <div class="col-6">
+          <div class="col">
               <div class="form-group">
-                <label for="exampleFormControlSelect1">Sala</label>
-                <input type="text" class="form-control" id="sala" name="sala" placeholder="">
+                <label for="exampleFormControlSelect1">Genero</label>
+                <input type="text" readonly class="form-control" value="{{fila[4]}}">
               </div>
           </div>
-          <div class="col-4">
+          <div class="col-12">
               <div class="form-group">
-                <label for="exampleFormControlTextarea1">Hora 1<span class="small"> separada por :</span> </label>
-                <input type="text" class="form-control" id="hora1" name="hora1" placeholder="">
+                <label for="exampleFormControlInput1">Email</label>
+              <input type="text" class="form-control" readonly value="{{fila[2]}}">
               </div>
           </div>
           <div class="col-4">
             <div class="form-group">
-              <label for="exampleFormControlTextarea1">Hora 2<span class="small"> separada por :</span> </label>
-              <input type="text" class="form-control" id="hora2" name="hora2" placeholder="">
+              <label for="exampleFormControlInput1">Fecha Nacimiento</label>
+              <input type="text" class="form-control" readonly value="{{fila[3]}}">
             </div>
         </div>
+        
         <div class="col-4">
           <div class="form-group">
-            <label for="exampleFormControlTextarea1">Hora 3<span class="small"> separada por :</span> </label>
-            <input type="text" class="form-control" id="hora3" name="hora3" placeholder="">
+            <label for="exampleFormControlInput1">Id_cargo</label>
+            <input type="text"  class="form-control" id="cargo" name="cargo" value="{{fila[5]}}">
           </div>
       </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label for="exampleFormControlInput1">precio</label>
-              <input type="number" class="form-control" id="precio" name="precio" placeholder="">
-            </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Cargo</label>
+          <input type="textarea" readonly class="form-control" value="{{fila[6]}}">
         </div>
-        <div class="col-6">
-          <div class="form-group">
-            <label for="exampleFormControlInput1">Pelicula</label>
-            <select name="pelicula_codigo" id="pelicula_codigo" class="form-control">
-              {% for fila in result %}  
-              <option value="{{ fila[0] }}">{{ fila[1] }}</option>
-              {% endfor %}
-            </select>
-          </div>
       </div>
-        
+      
+      <div style="padding-bottom: 10px;" class="col"></div>
         <div class="col-12">
-          <input class="btn btn-primary" type="submit" value="enviar">
+            <input class="btn btn-primary" type="submit" value="Enviar">
+          
         </div>
       </div>
     
     </form>
+    {% endfor %}
   </div>
 {% endblock %}

@@ -22,15 +22,8 @@ Bootstrap(app)
 
 app.secret_key = 'hWdsd39lg'
 
-
-
-
-
 # --------------------------- FORMS --------------------------- #
 
-class SearchForm(FlaskForm):
-    buscar = StringField('Buscar')
-    lupa = SubmitField('')
 
 class LoginForm(FlaskForm):
     email = StringField('Ingresar usuario', validators=[Required("Campo necesario.")])
@@ -63,6 +56,8 @@ def login_required(view):
 def admin_required(view):
     @functools.wraps( view ) # toma una función utilizada en un decorador y añadir la funcionalidad de copiar el nombre de la función.
     def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('home'))
         if g.user[6]!=1 and g.user[6]!=2:
             return redirect( url_for( 'home' ) ) # si no tiene datos, lo envío a que se loguee
         return view( **kwargs )
@@ -71,21 +66,33 @@ def admin_required(view):
 def super_required(view):
     @functools.wraps( view ) # toma una función utilizada en un decorador y añadir la funcionalidad de copiar el nombre de la función.
     def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('home'))
         if g.user[6]!=1:
             return redirect( url_for( 'home' ) ) # si no tiene datos, lo envío a que se loguee
         return view( **kwargs )
     return wrapped_view
 
+
 #INDEX
-@app.route('/')
+@app.route('/', methods=["POST", "GET"])
 def home():
     get_db()
     db=get_db()
-    result=db.execute("SELECT * FROM pelicula LIMIT 6")
+    result=db.execute("SELECT codigo,nombre,descripcion,genero,clasificacion,duracion,director,codigo,idioma,calificacion,portada from funcion inner join pelicula ON  pelicula.codigo = funcion.pelicula_codigo group by pelicula_codigo")
     result= result.fetchall()
-    db.close()
     
-    return render_template('index.html',result=result)
+    pronto=db.execute("SELECT pelicula.*  FROM pelicula WHERE NOT EXISTS (SELECT * FROM funcion WHERE pelicula.codigo=funcion.pelicula_codigo)")
+    pronto= pronto.fetchall()
+    
+    movie_names = [movie_name[1] for movie_name in result]
+    if request.method == 'POST':
+        nombre = request.form['movie_name']
+        movie_id=db.execute("SELECT codigo FROM pelicula WHERE nombre=?",(nombre,))
+        movie_id= movie_id.fetchall()
+        return redirect(url_for('show_movie', movie=movie_id[0][0]))
+    
+    return render_template('index.html',result=result, movie_names=movie_names, pronto=pronto)
 
 #LOGIN
 @app.route('/login/', methods=['POST', 'GET'])
@@ -137,16 +144,15 @@ def login():
                     response.set_cookie( 'username', email  ) # nombre de la cookie y su valor
                     
                     return response
-        if g.user[6]==1 or g.user==2:
-            return redirect(url_for('manage_movies'))
-        else:
-            return redirect(url_for('home'))
+        # if g.user[6]==1 or g.user[6]==2:
+        #     return redirect(url_for('manage_movies'))
+        # else:
+        #     return redirect(url_for('home'))
     
     return render_template('login.html', form=login_form)
 
 @app.before_request
 def cargar_usuario_registrado():
-    print("Entró en before_request.")
     # g.user = con los datos de la base de datos, basados en la session.
     id_usuario = session.get('id_usuario')
     if id_usuario is None:
@@ -157,7 +163,6 @@ def cargar_usuario_registrado():
                 ,
                 (id_usuario,)
             ).fetchone()
-    print('g.user:', g.user)
 
 
 #REGISTER
@@ -186,7 +191,7 @@ def register():
             error = "Contraseña requerida."
             flash(error)
         
-        ## Buscar correo y verificar si ya existe    
+        ## Buscar correo y verificar si ya existe https://www.youtube.com/embed/VzuEMvd0QWI   
         user_email = db.execute(
             'SELECT * FROM usuario WHERE email = ?'
             ,
@@ -222,7 +227,7 @@ def register():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect( url_for( 'login' ) )
+    return redirect( url_for( 'home' ) )
 
 
 #PROFILE_USER
@@ -265,32 +270,96 @@ def search(movie_name=None):
     return render_template('buscar.html', movie_name=movie_name)
 
 #MOVIE DETAILS
-@app.route('/watch/<string:movie>')
+@app.route('/watch/<string:movie>', methods=['GET', 'POST'])
 def show_movie(movie):
+    
     db=get_db()
-    codigo=comment=movie    
+    result=db.execute("SELECT * FROM pelicula ")
+    result= result.fetchall()
+
+    funcion=db.execute("SELECT * FROM funcion where pelicula_codigo =?", (movie,))
+    funcion= funcion.fetchall()
+    print(funcion)
+    
+    
+    movie_names = [movie_name[1] for movie_name in result]
+    if request.method == 'POST' and request.form['movie_name']:
+        nombre = request.form['movie_name']
+        movie_id=db.execute("SELECT codigo FROM pelicula WHERE nombre=?",(nombre,))
+        movie_id= movie_id.fetchall()
+        return redirect(url_for('show_movie', movie=movie_id[0][0]))
+ 
+    codigo=comment=movie
     movie=db.execute("SELECT * FROM pelicula WHERE codigo=?",(movie,))
     movie= movie.fetchall()
     comment=db.execute("SELECT contenido,fecha,nombre FROM comentario inner join usuario ON usuario.id=comentario.usuario_id  where pelicula_codigo=?",(comment,))
     comment= comment.fetchall()
+    score=db.execute("SELECT score FROM calificacion inner join pelicula ON pelicula.codigo=calificacion.pelicula_id  where pelicula_id=?",(codigo,))
+    score= score.fetchall()
+
+    if sum([int(x[0]) for x in score]) > 0:
+        avg_score = sum([int(x[0]) for x in score])/len(score)
+        return render_template('movie_detailed.html', movie=movie,comment=comment,pelicula=codigo, score=avg_score, total_votos=len(score), funcion=funcion)
+
+    
+    print("g.user:" ,g.user)
+    
+    if request.method == 'POST' and g.user is not None:
+        stars =request.form['rate-movie']
+        movie_id = request.form['id']
+        print("codigo: ", codigo)
+        print("movie_id: ", movie_id)
+        if g.user:
+            user_vote = db.execute("SELECT id_calificacion, usuario_id, score FROM calificacion inner join pelicula ON pelicula.codigo=calificacion.pelicula_id  where pelicula_id=? and usuario_id=?", (movie_id, g.user[0]))
+            user_vote= user_vote.fetchall()
+            print(user_vote)
+            if user_vote:
+                sql="UPDATE calificacion SET score= '{}' WHERE id_calificacion= '{}'".format(stars, user_vote[0][0])
+                db.execute(sql)
+                db.commit()
+            else:
+                db.execute("INSERT INTO calificacion (score, usuario_id, pelicula_id) VALUES (?,?,?) "
+                            , (stars,g.user[0],movie_id) )
+                db.commit()
+            # db.close()
+        return redirect(url_for( 'show_movie',movie=movie_id))
+
+    
     db.close()
-    return render_template('movie_detailed.html', movie=movie,comment=comment,pelicula=codigo)
+    return render_template('movie_detailed.html', movie=movie,comment=comment,pelicula=codigo, movie_names=movie_names, funcion=funcion)
 
 #PRONTO
-@app.route('/pronto/', methods=['GET'])
+@app.route('/pronto/', methods=['GET','POST'])
 def upcoming_movies():
-    return render_template('pronto.html')
+    get_db()
+    db=get_db()
+    result=db.execute("SELECT * FROM pelicula")
+    result= result.fetchall()
+    pronto=db.execute("SELECT pelicula.*  FROM pelicula WHERE NOT EXISTS (SELECT * FROM funcion WHERE pelicula.codigo=funcion.pelicula_codigo)")
+    pronto= pronto.fetchall()
+
+    movie_names = [movie_name[1] for movie_name in result]
+    
+    if request.method == 'POST':
+        nombre = request.form['movie_name']
+        movie_id=db.execute("SELECT codigo FROM pelicula WHERE nombre=?",(nombre,))
+        movie_id= movie_id.fetchall()
+        db.close()
+        return redirect(url_for('show_movie', movie=movie_id[0][0]))
+    
+    return render_template('pronto.html', movie_names= movie_names, pronto=pronto)
 
 #FUNCIONES ADMIN
 
 @app.route('/admin_funciones/', methods=['GET', 'POST'])
 def manage_functions():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
         db=get_db()
-        result=db.execute("SELECT * FROM funcion")
-            
+        result=db.execute("SELECT id,categoria,sala,hora1,hora2,hora3,precio,codigo,nombre FROM funcion inner join pelicula ON funcion.pelicula_codigo=pelicula.codigo")
         result= result.fetchall()
         db.close()
     return render_template('funciones.html',result=result)
@@ -299,6 +368,8 @@ def manage_functions():
 
 @app.route('/admin_peliculas/', methods=['GET', 'POST'])
 def manage_movies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -318,7 +389,7 @@ def manage_users():
     try:
         if request.method == 'GET':
             db=get_db()
-            result=db.execute("SELECT * FROM usuario")
+            result=db.execute("SELECT * FROM usuario INNER JOIN cargo ON usuario.cargo_id = cargo.id")
             
             result= result.fetchall()
             db.close()
@@ -326,10 +397,64 @@ def manage_users():
     except:
         return render_template('rolyuser.html')
 
+@app.route('/admin_user/delete', methods=['GET', 'POST'])
+def deleteusers():
+    if g.user[6]!=1 and g.user[6]!=2:
+        return redirect(url_for('home'))
+    
+    if request.method == 'GET':
+        id=request.args.get('id')
+        db=get_db()
+        db.execute("DELETE FROM usuario WHERE id=?",(id,))
+        db.commit()
+        db.close()
+    return redirect(url_for('manage_users'))    
+  
+@app.route('/admin_user/edit', methods=['GET', 'POST'])
+def editusers():
+    if g.user[6]!=1 and g.user[6]!=2:
+        return redirect(url_for('home'))
+    
+    if request.method == 'GET':
+        id=request.args.get('id')
+        db=get_db()
+        result=db.execute("SELECT usuario.id,nombre,email,fecha_nacimiento,genero,cargo_id,cargouser FROM usuario INNER JOIN cargo ON usuario.cargo_id = cargo.id WHERE usuario.id=?",(id,))
+        result= result.fetchall()
+        db.close()
+    return render_template('edituser.html',result=result)    
+
+@app.route('/admin_user/see', methods=['GET', 'POST'])
+def seeusers():
+    if g.user[6]!=1 and g.user[6]!=2:
+        return redirect(url_for('home'))
+    
+    if request.method == 'GET':
+        id=request.args.get('id')
+        db=get_db()
+        result=db.execute("SELECT usuario.id,nombre,email,fecha_nacimiento,genero,cargo_id,cargouser FROM usuario INNER JOIN cargo ON usuario.cargo_id = cargo.id WHERE usuario.id=?",(id,))
+        result= result.fetchall()
+        db.close()
+    return render_template('seeusers.html',result=result) 
+
+@app.route('/admin_user/save/', methods=['GET', 'POST'])
+def usersave():
+    if request.method == 'POST':   
+        id = request.form['id']
+        cargo =request.form['cargo']
+        db=get_db()
+        sql="UPDATE usuario SET cargo_id= '{}' WHERE id= '{}'".format(cargo,id)
+        db.execute(sql)
+        db.commit()
+        db.close()
+        return redirect(url_for( 'manage_users'))
+
+
 #crear peliculas        
 
 @app.route('/admin_peliculas/crear/', methods=['GET', 'POST'])
 def create_movies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'POST':
@@ -345,6 +470,8 @@ def allowed_file(filename):
           
 @app.route('/admin_peliculas/save/', methods=['GET', 'POST'])
 def save_movies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'POST':   
@@ -380,6 +507,8 @@ def save_movies():
 
 @app.route('/admin_peliculas/ver/', methods=['GET', 'POST'])
 def seemovies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -394,6 +523,8 @@ def seemovies():
 
 @app.route('/admin_peliculas/edit/', methods=['GET', 'POST'])
 def editmovies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -407,6 +538,9 @@ def editmovies():
 
 @app.route('/admin_peliculas/update/', methods=['GET', 'POST','PUT'])
 def updatemovies():
+    
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'POST':
@@ -431,6 +565,8 @@ def updatemovies():
 
 @app.route('/admin_peliculas/delete/', methods=['GET', 'POST'])
 def deletemovies():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -445,6 +581,8 @@ def deletemovies():
  
 @app.route('/admin_funciones/crear/', methods=['GET', 'POST'])
 def create_funcion():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -458,19 +596,23 @@ def create_funcion():
 
 @app.route('/admin_funciones/save/', methods=['GET', 'POST'])
 def save_funcion():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'POST':   
         categoria = request.form['categoria']
         sala = request.form['sala']            
-        hora = request.form['hora']
+        hora1 = request.form['hora1']
+        hora2 = request.form['hora2']
+        hora3 = request.form['hora3']
         precio = request.form['precio']
         pelicula_codigo = request.form['pelicula_codigo']
         
         db=get_db()
-        db.execute('INSERT INTO funcion (categoria,sala,hora,puntuacion,precio,pelicula_codigo) VALUES (?,?,?,?,?,?) '
+        db.execute('INSERT INTO funcion (categoria,sala,hora1,hora2,hora3,puntuacion,precio,pelicula_codigo) VALUES (?,?,?,?,?,?,?,?) '
                 ,
-                (categoria,sala,hora,0,precio,pelicula_codigo))
+                (categoria,sala,hora1,hora2,hora3,0,precio,pelicula_codigo))
 
         db.commit()
         db.close()  
@@ -490,21 +632,26 @@ def editfuncion():
 
 @app.route('/admin_funciones/update/', methods=['GET', 'POST','PUT'])
 def updatefuncion():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'POST':
         id = request.form['id']
         categoria = request.form['categoria']
         sala = request.form['sala']            
-        hora = request.form['hora']
+        hora1 = request.form['hora1']
+        hora2 = request.form['hora2']
+        hora3 = request.form['hora3']
         precio = request.form['precio']
         pelicula_codigo = request.form['pelicula_codigo']
   
     db=get_db()
     #"UPDATE Producto  SET ca = '{}', precio = '{}', existencia = '{}' WHERE id = '{}'".format(nombre, precio, existencia, id)
-    sql="UPDATE funcion SET categoria='{}', sala= '{}', hora= '{}', precio= '{}', pelicula_codigo= '{}' WHERE id= '{}'".format(categoria,sala,hora,precio,pelicula_codigo,id)
+    sql="UPDATE funcion SET categoria='{}', sala= '{}', hora1= '{}', hora2= '{}', hora3= '{}', precio= '{}', pelicula_codigo= '{}' WHERE id= '{}'".format(categoria,sala,hora1,hora2,hora3,precio,pelicula_codigo,id)
     db.execute(sql)
     db.commit()
+
     db.close()
     return redirect(url_for( 'manage_functions'))
 
@@ -523,6 +670,8 @@ def seefuncion():
 
 @app.route('/admin_funciones/delete/', methods=['GET', 'POST'])
 def deletefuncion():
+    if g.user is None:
+        return redirect(url_for('home'))
     if g.user[6]!=1 and g.user[6]!=2:
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -563,7 +712,7 @@ def mycomments():
     comment=db.execute("SELECT idcomentario,contenido,fecha,nombre FROM comentario inner join usuario ON usuario.id=comentario.usuario_id  where usuario_id=?",(g.user[0],))
     comment= comment.fetchall()
 
-    if request.method == 'GET':
+    if request.method == 'GET' :
         id=request.args.get('id')
         modo=request.args.get('modo')
         if modo=='d':

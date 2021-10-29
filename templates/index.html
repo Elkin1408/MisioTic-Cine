@@ -18,6 +18,8 @@
     type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"
     ></script>
+
+
 {% endblock %}
 
 {% block title %} CineMisionTic {% endblock %}
@@ -32,10 +34,16 @@
                 <div class="links">
                     <a href="{{ url_for('home') }}" class="link">CARTELERA</a>
                     <a href="{{ url_for('upcoming_movies') }}" class="link">PRONTO</a>
+                    
                     <div class="link">
-                    <form class="form-search">
+                    <form class="form-search" method="POST">
                         <div class="input-group">
-                        <input class="form-control form-text" maxlength="128" placeholder="Buscar" size="15" type="text" />
+                        <input name="movie_name" list="movies-list" class="form-control form-text" maxlength="128" placeholder="Buscar" size="15" type="text" />
+                        <datalist id="movies-list">
+                            {% for movie in movie_names %}
+                                <option>{{ movie }}</option>
+                            {% endfor %}
+                        </datalist>
                         <span class="input-group-btn"><button class="btn btn-primary"><i class="fa fa-search fa-lg">&nbsp;</i></button></span>
                         </div>
                     </form>
@@ -62,59 +70,45 @@
                 <h2 class="subtitle">Cartelera<span class="point">.</span></h2>
                 <p class="copy__section">Las mejores experiencias para ti.</p>
                 <!-- Cartelera-->
-                <article class="container-cards row">
-                    {% for fila in result %}
-                    <div class="card col-4">
-                        <img src="{{fila[10]}}" class="card__img">
-                        <div class="cards__text">
-                            <p class="card__list">{{fila[3]}}</p>
-                            <h3 class="card__title">{{fila[1]}}<span class="point">.</span></h3>
-                            <p class="card__copy">Recomendada para Mayores {{fila[4]}} Años</p>
-                            <p class="card__copy">{{fila[5]}} Minutos</p>
-                            <a href="{{ url_for('show_movie',movie=fila[0]) }}" class="card__button">Ver</a>
+                    <div class="testimony-container">
+                        {% for fila in result %}
+                        <div class="testimony__card">
+                            <img src="{{fila[10]}}" class="testimony__img">
+                            <div class="testimony__copy">
+                                <div class="testimony__info " style="background-color:rgba(215,215,215,0.5)">
+                                    <p class="testimony__position">{{fila[3]}}</p>
+                                    <h3 class="testimony__name">{{fila[1]}}<span class="point">.</span></h3>
+                                    <p class="testimony__position">{{fila[5]}} Minutos</p>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('show_movie',movie=fila[0]) }}" class="card__button" style="padding: 0">Ver</a>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </article>
+                </div>
+            </section>
+
+
+
                 <!-- fin cartelera-->
             </div>
         </section>
         <section class="projects container">
                 <h2 class="subtitle">Pronto<span class="point">.</span></h2>
                 <p class="copy__section">Proximamente en Cartelera.</p>
+                
                 <div class="testimony-container">
+                    {% for line in pronto %}
                     <div class="testimony__card">
-                        <img src="/static/img/poster-1.png" class="testimony__img">
+                        <img src="{{line[10]}}" class="testimony__img">
                         <div class="testimony__copy">
                             <div class="testimony__info">
-                                <h3 class="testimony__name">Venom: Carnage</h3>
+                                <h3 class="testimony__name">{{ line[1] }}</h3>
                                 <p class="testimony__position">Proximamente.</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="testimony__card">
-                        <img src="/static/img/poster-2.png" class="testimony__img">
-                        <div class="testimony__copy">
-                            <div class="testimony__info">
-                                <h3 class="testimony__name">Rock Dog</h3>
-                                <p class="testimony__position">Proximamente.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="testimony__card">
-                        <img src="/static/img/poster-3.jpg" class="testimony__img">
-                        <div class="testimony__copy">
-                            <div class="testimony__info">
-                                <h3 class="testimony__name">Dune</h3>
-                                <p class="testimony__position">Proximamente.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -144,7 +138,7 @@
                 </div>
             </section>
             <section class="get-email">
-                <h3 class="title__footer">¿Estás listo para trabajar con nosotros?</h3>
+                <h3 class="title__footer">¿Estás listo para disfrutar con nosotros?</h3>
                 <form class="newsletter newsletter--modifier">
                     <input type="text" class="newsletter__input" placeholder="Ingresa tu email">
                     <input type="submit" class="newsletter__submit" value="Comienza hoy">

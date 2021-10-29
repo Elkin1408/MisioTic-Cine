@@ -92,7 +92,7 @@
   </nav>
   <div class="content">
     <div style="padding-top: 30px;padding-bottom: 10px;" class="row">
-      <div class="col"><h2><i class="fas fa-film"></i> Crear Pelicula</h2></div>
+      <div class="col"><h2><i class="fas fa-film"></i> Ver funcion</h2></div>
     </div>
     {% for fila in result %}  
     <form method="POST" action="{{ url_for('updatefuncion') }}" enctype="multipart/form-data">
@@ -113,12 +113,12 @@
           <div class="col-12">
               <div class="form-group">
                 <label for="exampleFormControlTextarea1">Hora</label>
-                <input type="time" readonly class="form-control" id="hora" name="hora" value="{{fila[3]}}">
+                <input type="text" readonly class="form-control" id="hora" name="hora" value="{{fila[3]}}">
               </div>
           </div>
           <div class="col-6">
             <div class="form-group">
-              <label for="exampleFormControlInput1">precio</label>
+              <label for="exampleFormControlInput1">Precio</label>
               <input type="number" readonly class="form-control" id="precio" name="precio" value="{{fila[5]}}">
             </div>
         </div>

@@ -86,7 +86,7 @@
     {% if g.user[6]==1%}
     <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Roles y Usuarios</a>
     {% endif %}
-    <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
+    <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
   </div>
   <nav style="background: linear-gradient(180deg, var(--black2) 0%, var(--black1) 100%);color: white;" class="navbar justify-content-between">
     <a class="navbar-brand"><i class="fas fa-ticket-alt"></i> Cine MinTic</a>
@@ -97,37 +97,54 @@
       <div class="col"><h2><i class="fas fa-film"></i> Editar Funcion</h2></div>
     </div>
     {% for fila in result %}  
-    <form method="POST" action="{{ url_for('updatefuncion') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('updatefuncion') }}" >
       <div style="margin-left: 30px;margin-right: 30px;" class="row">
-          <div class="col">
+          <div class="col-6">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Categoria</label>
                 <input type="hidden" class="form-control" id="id" name="id" value="{{fila[0]}}">
-                <input type="text" class="form-control" id="categoria" name="categoria" value="{{fila[1]}}">
-              </div>
-          </div>
-          <div class="col">
-              <div class="form-group">
-                <label for="exampleFormControlSelect1">Sala</label>
-                <input type="text" class="form-control" id="sala" name="sala" value="{{fila[2]}}">
-              </div>
-          </div>
-          <div class="col-12">
-              <div class="form-group">
-                <label for="exampleFormControlTextarea1">Hora</label>
-                <input type="time" class="form-control" id="hora" name="hora" value="{{fila[3]}}">
+                <select class="form-control" name="categoria" id="categoria">
+                  <option value="{{ fila[1] }}" hidden>{{ fila[1] }}</option>
+                  <option value="2D Sub">2D Sub</option>
+                  <option value="3D Doblado">3D Doblado</option>
+                  <option value="3D Ultra Dob">3D Ultra Dob</option>
+                </select>
               </div>
           </div>
           <div class="col-6">
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Sala</label>
+                <input type="text" class="form-control" id="sala" name="sala" value="{{fila[5]}}">
+              </div>
+          </div>
+          <div class="col-4">
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Hora 1</label>
+                <input type="text" class="form-control" id="hora1" name="hora1" value="{{fila[2]}}">
+              </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">Hora 2</label>
+              <input type="text" class="form-control" id="hora2" name="hora2" value="{{fila[3]}}">
+            </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Hora 3</label>
+            <input type="text" class="form-control" id="hora3" name="hora3" value="{{fila[4]}}">
+          </div>
+      </div>
+          <div class="col-6">
             <div class="form-group">
               <label for="exampleFormControlInput1">precio</label>
-              <input type="number" class="form-control" id="precio" name="precio" value="{{fila[5]}}">
+              <input type="number" class="form-control" id="precio" name="precio" value="{{fila[7]}}">
             </div>
         </div>
         <div class="col-6">
           <div class="form-group">
             <label for="exampleFormControlInput1">Pelicula</label>
-            <input type="text" class="form-control" id="pelicula_codigo" name="pelicula_codigo" value="{{fila[6]}}">
+            <input type="text" class="form-control" id="pelicula_codigo" name="pelicula_codigo" value="{{fila[-1]}}">
           </div>
       </div>
       {% endfor %}  
